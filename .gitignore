@@ -27,3 +27,5 @@ loads/loads_table_half.csv
 
 !meshes/
 !meshes/*
+
+inputs/section_50.geo
