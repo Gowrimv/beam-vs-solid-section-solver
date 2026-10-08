@@ -10,8 +10,10 @@ square cantilever (L = 100, stresses compared at mid-span Z = 50).
 | --- | --- |
 | `batch/` | The pipeline: `batch_driver.py` (main), `abaqus_io.py`, `fenics_solve.py`, `compare.py`, gates in `strain_checks.py`, tests in `test_gates.py`, plus `README.md` and `PARAMETERS_AND_CHANGES.md` (full record of parameters, changes, observations) |
 | `inputs/` | Abaqus input templates (h = 1 and h = 0.5) and the section geometry |
-| `loads/` | Load tables (`loads_table*.csv`, seed 123) and test subsets (`loads_gate_test.csv`, `loads_subset_elem.csv`, 30 cases for the element test) |
+| `loads/` | `loads_table.csv` (1300 rows, seed 123; one file serves both section sizes), `loads_table_nd.csv` (non-dimensional), and the test subsets `loads_gate_test.csv` and `loads_subset_elem.csv` (30 cases for the element test) |
 | `results/` | `summary.csv` and accepted-load tables of the 1000-case 1x1 run, the pilot, and the record of the C3D8I run settings |
+
+Only results produced after the strain-frame fix are included; older load files and results from the double-rotation code are not in the repository (the history is described in `batch/PARAMETERS_AND_CHANGES.md`).
 
 Large Abaqus output (.odb, .dat, case folders), meshes and the dated `_backup_*`
 folders are not in the repository (see `.gitignore`).

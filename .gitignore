@@ -16,3 +16,11 @@ __pycache__/
 abaqus.rpy*
 _backup_*/
 cases_*/case_*/
+
+# Superseded by the strain-frame (double-rotation) fix, 8 Oct 2026: kept locally, not versioned
+docs_batch_test_copies/
+loads/loads_E1e6_*
+loads/loads_E1p2e5_*
+loads/loads_h4_*
+loads/loads_table_1x1.csv
+loads/loads_table_half.csv
