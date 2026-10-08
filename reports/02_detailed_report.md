@@ -94,6 +94,21 @@ The prediction from the brick geometry lands within 0.3 points of the observed v
 
 **What this does not prove.** It is strong evidence, not proof. The "leaving out" figure is a recomputation on saved data (all 11 centre-line points against the 9 inner ones); it removes nothing from the runs, and it is partly circular, since the points were chosen because the theory says they read low. It explains the level of the error, but not why the error rises with tip moment and hourglass energy (section 6). The C3D8I test in section 7 is the direct check, with every node kept.
 
+**C3D8I test result (8 Oct 2026).** The same 30 loads (`loads_subset_elem.csv`: the worst cases 769, 406, 438, 804 and 141, 887, 273, 450 and others, plus 14 of the best) were rerun with `--element-3d C3D8I` on the same 10 × 10 mesh (folder `cases_EI_1x1_C3D8I`). One Abaqus job failed or timed out and a spare took its place, so 29 cases pair with the original run. The loads are identical (mismatch 0.0), the 1D residual is at most 0.6%, and no case failed the hourglass gate.
+
+| Group (Mises error) | C3D8R before | C3D8I after |
+| --- | --- | --- |
+| Best cases (14) | 5.55% | 1.83% |
+| Worst cases (11) | 7.77% | 2.03% |
+| Hand-picked worst (4) | 8.13% | 2.64% |
+| All 29 (median) | 5.64% | 1.93% |
+
+Every one of the 29 cases improved: the paired drop was 2.7 to 6.2 points (median 4.2), and the new error is about 30% of the old one. The new errors range from 1.4% to 3.1%, against 5.3% to 8.4% before. S33 fell from 5.7% to 1.9% (median), and S13 and S23 fell from about 0.9% to 0.6%. The strain-energy error barely moved (3.9% to 3.2%).
+
+Within these 29 cases the correlation of the error with tip moment fell from 0.86 to 0.16, and with twist from 0.59 to −0.08. Two limits apply: the cases were chosen as best and worst, so these correlations are not comparable with the 1000-case values (0.69 and 0.65), and with n = 29 a correlation below about 0.37 cannot be told from zero. C3D8I has no hourglass modes, so its hourglass ratio is exactly zero; the test therefore cannot separate hourglass from other reduced-integration effects of C3D8R. About 2% error remains unexplained. It may be the coarse 10 × 10 mesh (the arithmetic gave about 2.5% for 20 bricks with C3D8R) or differences between FEniCS and the 3D solid that are not about the brick; a finer mesh is needed to tell them apart.
+
+**Conclusion.** Most of the 6% floor comes from the C3D8R element: switching element, with identical loads and mesh, removed about 70% of the error in every case tested. This confirms the prediction (1–2%) in the median, not in every case.
+
 ## 6. Open questions
 
 **Error grows with tip moment and twist.** In `cases_EI_1x1` (1000 cases) the Mises error (`relL2_resultant_Mises`) rises from a median of 5.9% in the lowest fifth of tip moments to 6.7% in the highest fifth. Extrapolating the straight-line fit to zero moment gives 5.9%, so the floor exists even with no moment, and the moment adds about 0.017 percentage points per unit of |Mx|. The table below shows how well each candidate cause tracks the error across the 1000 cases (r = Pearson correlation, R² = share of the variation explained, ρ = Spearman rank correlation).
@@ -111,7 +126,7 @@ The candidates are not independent, so I separated them: twist and the hourglass
 
 **Correction to the earlier statement about rotation.** Total rotation has R² = 0.007 on its own, but it is correlated with tip moment (r = 0.41). With the tip moment removed, its partial correlation with the error is −0.55, and adding it to the fit raises R² from 0.76 to 0.83. So "total rotation has no link" was too strong: it has no simple link, and it may act together with the moment. The sign (more rotation, lower error at the same moment) is not understood.
 
-The best-supported reading is that the part of the rise carried by twist comes from hourglass energy growing in the C3D8R bricks, and the rest comes from the tip moment itself. This is a statistical association, not a demonstration of cause. The C3D8I run removes hourglass modes, so it tests this directly.
+The best-supported reading is that the part of the rise carried by twist comes from hourglass energy growing in the C3D8R bricks, and the rest comes from the tip moment itself. This is a statistical association, not a demonstration of cause. The C3D8I run (section 5) removed most of the dependence on tip moment and twist in 29 hand-picked cases, but because C3D8I has no hourglass modes it cannot separate hourglass from other C3D8R effects.
 
 **Shear-stiffness anomaly.** In the old runs, shear force divided by shear strain in direction 2 was 0.25 of the expected value whatever stiffness was set. The cause was the double rotation; it no longer appears. In the new run the shear factor is 0.8497 (Cowper) in every case, and the Abaqus-to-used shear-strain ratios SE2 and SE3 both equal 1.2495 in every case (spread 2.5e-7). Abaqus's default transverse shear stiffness is 0.68·G·A, against 0.8497·G·A for Cowper. Because this value is the same in all 1000 cases, it cannot cause the rise of the error with moment or twist; it could only shift the overall level, and it does not affect axial stress at mid-span, which comes from the moment.
 
@@ -119,9 +134,9 @@ The best-supported reading is that the part of the rise carried by twist comes f
 
 ## 7. Next steps and how to test
 
-1. **C3D8I test (the main check).** `batch_driver.py` now takes `--element-3d C3D8I`, or the environment variable `BATCH_ELEMENT_3D`, with the same 10 × 10 mesh. `make_subset_loads.py` makes a 30-case subset (the worst cases 769, 406, 24, 438, 804 plus some of the best), and `compare_element_runs.py` compares the two runs. Predictions: the floor drops from about 6% to 1–2%, the hourglass energy ratio falls, and the rise with tip moment and twist weakens. Compare the same correlations as in section 6 (error against |Mx|, |UR3| and ALLAE/ALLIE) on the 30 cases. If the floor stays near 6%, the brick explanation is wrong.
+1. **C3D8I test (the main check).** `batch_driver.py` now takes `--element-3d C3D8I`, or the environment variable `BATCH_ELEMENT_3D`, with the same 10 × 10 mesh. `make_subset_loads.py` makes a 30-case subset (the worst cases 769, 406, 24, 438, 804 plus some of the best), and `compare_element_runs.py` compares the two runs. Predictions: the floor drops from about 6% to 1–2%, the hourglass energy ratio falls, and the rise with tip moment and twist weakens. Compare the same correlations as in section 6 (error against |Mx|, |UR3| and ALLAE/ALLIE) on the 30 cases. Result (section 5): done on 8 Oct; the median error fell from 5.6% to 1.9%.
 2. Run the 0.5 × 0.5 section (`cases_EI_half`).
 3. Re-solve older folders with `--redo-fenics`.
 4. Run the gate end-to-end test (`gate_test_1x1`) and recover case 469.
 
-**Caveats.** Only the 1 × 1 section has been run in full. The floor explanation is strongly suggested but unproven until step 1 is done. Only C3D8\* eight-node bricks can be swapped in; quadratic or tetrahedral elements need a new mesh template. Each code change left a dated backup folder, and the record is in `PARAMETERS_AND_CHANGES.md`.
+**Caveats.** Only the 1 × 1 section has been run in full. The floor explanation is supported by the C3D8I test (median 5.6% to 1.9%), but only on 29 hand-picked cases; a random sample and a finer mesh are still needed, and about 2% is unexplained. Only C3D8\* eight-node bricks can be swapped in; quadratic or tetrahedral elements need a new mesh template. Each code change left a dated backup folder, and the record is in `PARAMETERS_AND_CHANGES.md`.

@@ -30,6 +30,7 @@ this repository never edits it.
 - Full 1x1 run (1000 cases): Mises error vs 3D solid 5.3-8.4%, median 6.4%.
 - The ~6% floor is probably the 3D reference (C3D8R reads outer nodes at ~90%); strongly
   suggested, not proven. Test: `--element-3d C3D8I` on `loads/loads_subset_elem.csv`.
+- Element test (8 Oct): rerunning 30 cases with C3D8I cut the median Mises error from 5.6% to 1.9% in all 29 comparable cases (`results/cases_EI_1x1_C3D8I`). About 2% remains unexplained; the sample was hand-picked.
 - Error rises slightly with tip moment (5.9% to 6.7%) and with the hourglass energy ratio
   (r = 0.70, 0.69); twist acts through hourglass; shear stiffness is identical in all cases.
 
