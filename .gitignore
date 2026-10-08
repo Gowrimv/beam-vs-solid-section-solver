@@ -24,3 +24,6 @@ loads/loads_E1p2e5_*
 loads/loads_h4_*
 loads/loads_table_1x1.csv
 loads/loads_table_half.csv
+
+!meshes/
+!meshes/*
