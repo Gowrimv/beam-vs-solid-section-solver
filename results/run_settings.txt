@@ -1,0 +1,1 @@
+2026-10-08 09:03:11  section_side=1.0  E=120000.0  inp_3d=3d_fx_fy_mx_E1p2e5.inp  element_3d=C3D8I  loads_csv=/mnt/c/Users/macLab/Documents/AbaqusProjects/batch_test/loads_subset_elem.csv

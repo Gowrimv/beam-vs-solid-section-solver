@@ -1,0 +1,17 @@
+reason,label,count
+abaqus_failed,Abaqus failed/timed out,0
+extract_failed,ODB extraction failed,0
+fenics_not_built,FEniCS problem not built,0
+fenics_diverged,FEniCS did not converge,0
+fenics_error,FEniCS/post-extract error,0
+unconverged_1d,1D Abaqus not converged (residual > limit),0
+hourglass_energy,3D hourglass energy too large (ALLAE/ALLIE),0
+rejected_admission,rejected at admission (axial-stress dominance/strain),0
+rejected_previously,rejected at admission (earlier run),0
+pre_strain_screen,pre-run strain screen,0
+pre_bending_dominance,pre-run bending dominance,0
+pre_shear_bending_gate,pre-run shear/bending gate (table),0
+pre_mid_moment_floor,pre-run mid-span moment floor,0
+post_run_gate,post-run gates in main(),0
+hard_error,exceptions,0
+accepted,accepted,5
